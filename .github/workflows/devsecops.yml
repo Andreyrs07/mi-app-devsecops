@@ -1,0 +1,41 @@
+name: Pipeline DevSecOps
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v3
+
+      - name: Construir imagen Docker
+        run: docker build -t mi-app:latest .
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v3
+
+      - name: Construir imagen para escaneo
+        run: docker build -t mi-app:scan .
+
+      - name: Escanear con Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'mi-app:scan'
+          format: 'table'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH'
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: security-scan
+    steps:
+      - name: Simular despliegue
+        run: echo "✅ App desplegada correctamente"
+

@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - APP_ENV=${APP_ENV}
+      - API_KEY=${API_KEY}
+    restart: unless-stopped
+```
+
+---
+
+**Archivo: `.env.example`**
+```
+APP_ENV=production
+API_KEY=tu_api_key_aqui
+```
+
+---
+
+**Archivo: `.env`** ← este es el que tiene los datos reales (nunca se sube a GitHub)
+```
+APP_ENV=development
+API_KEY=mi-clave-secreta-123
+```
+
+---
+
+**Archivo: `.gitignore`**
+```
+.env
+node_modules/
